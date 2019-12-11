@@ -45,34 +45,81 @@ public class Asos {
 
         Set<String> productLinks = new HashSet<>();
 
-        IntStream.rangeClosed(1, 3)
+        IntStream.range(1, 2)
                 .forEach(i -> {
 
+                    try{
+
+                        String url = "https://www.asos.fr/femme/vetements-de-sport/shorts/cat/?cid=27164&nlid=ww|v%C3%AAtements+de+sport|voir+par+produit";
+
+                        driver.navigate().to(url);
+
+                        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div[data-auto-id='productList']")));
+
+                        List<WebElement> links = driver.findElements(By.cssSelector("article[data-auto-id='productTile']"));
+                        links.forEach(el -> {
+                            //productLinks.add(el.findElement(By.tagName("a")).getAttribute("href"));
+
+
+                            String image = null;
+
+                            String link = el.findElement(By.tagName("a")).getAttribute("href");
+                            String name = el.findElement(By.cssSelector("div[data-auto-id='productTileDescription']"))
+                                    .findElement(By.tagName("p")).getText().trim();
+
+                            if(el.findElement(By.cssSelector("img[data-auto-id='productTileImage']")) != null){
+                                image = el.findElement(By.cssSelector("img[data-auto-id='productTileImage']"))
+                                        .getAttribute("src").trim();
+                            }
 
 
 
-                    String url = "https://www.asos.fr/femme/vetements-de-sport/shorts/cat/?cid=27164&nlid=ww|v%C3%AAtements+de+sport|voir+par+produit";
+                            int price = 0;
 
-                    driver.navigate().to(url);
+                            if(!el.findElement(By.cssSelector("span[data-auto-id='productTilePrice']")).getText().contains("À partir de")){
 
-                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div[data-auto-id='productList']")));
+                                price = (int)Float.parseFloat(el.findElement(By.cssSelector("span[data-auto-id='productTilePrice']"))
+                                        .getText()
+                                        .replace(",", "")
+                                        .replace("€", "")
+                                        .trim());
+                            }
+
+                            if ( price != 0 && image !=null) {
+
+                                Product product = new Product();
+                                product.setName(name);
+                                product.setPrice(price);
+                                product.setImage(image);
+                                product.setProvider("asos");
+                                product.setLink(link);
+                                product.setLogo("https://upload.wikimedia.org/wikipedia/commons/a/a8/Asos.svg");
+
+                                System.out.println(product);
+
+                            }
 
 
-                    List<WebElement> links = driver.findElements(By.cssSelector("article[data-auto-id='productTile']"));
-                    links.forEach(el -> {
-                        System.out.println(el);
-                        productLinks.add(el.findElement(By.tagName("a")).getAttribute("href"));
-                    });
+
+                        });
+
+                    }
+                    catch (Exception ex){
+                        System.out.println(ex.getMessage());
+                    }
+
+
 
 
                 });
 
 
-        productLinks.forEach(System.out::println);
-        System.out.println(productLinks.size());
+        //productLinks.forEach(System.out::println);
+        //System.out.println(productLinks.size());
 
 
 
+/*
 
         productLinks.forEach(l -> {
 
@@ -132,13 +179,15 @@ public class Asos {
 
                     System.out.println(product);
 
-                    /*HttpResponse<Product> productHttpResponse = Unirest.post("http://localhost:8080/api/v1/products")
+                    */
+/*HttpResponse<Product> productHttpResponse = Unirest.post("http://localhost:8080/api/v1/products")
                             .header("Content-Type", "application/json")
                             .body(product)
                             .asObject(Product.class);
 
                     System.out.println(productHttpResponse.getStatus());
-                    System.out.println(productHttpResponse.getBody());*/
+                    System.out.println(productHttpResponse.getBody());*//*
+
                 }
 
 
@@ -149,6 +198,7 @@ public class Asos {
 
         });
 
+*/
 
 
 

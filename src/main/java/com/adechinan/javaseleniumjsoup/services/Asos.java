@@ -1,8 +1,11 @@
-package com.adechinan.javaseleniumjsoup;
+package com.adechinan.javaseleniumjsoup.services;
 
 import com.adechinan.javaseleniumjsoup.models.Product;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -56,7 +59,10 @@ public class Asos {
 
                         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div[data-auto-id='productList']")));
 
+
+
                         List<WebElement> links = driver.findElements(By.cssSelector("article[data-auto-id='productTile']"));
+                        System.out.println(links.size());
                         links.forEach(el -> {
                             //productLinks.add(el.findElement(By.tagName("a")).getAttribute("href"));
 
@@ -67,8 +73,8 @@ public class Asos {
                             String name = el.findElement(By.cssSelector("div[data-auto-id='productTileDescription']"))
                                     .findElement(By.tagName("p")).getText().trim();
 
-                            if(el.findElement(By.cssSelector("img[data-auto-id='productTileImage']")) != null){
-                                image = el.findElement(By.cssSelector("img[data-auto-id='productTileImage']"))
+                            if(el.findElement(By.className("_9n6j7z7")).findElement(By.tagName("img")) != null){
+                                image = el.findElement(By.className("_9n6j7z7")).findElement(By.tagName("img"))
                                         .getAttribute("src").trim();
                             }
 
